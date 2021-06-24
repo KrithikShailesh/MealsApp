@@ -96,10 +96,19 @@ const FavNavigator = () =>{
                 }}>
             <FavStack.Screen name="favourites" 
                 component={FavouritesScreen} 
-                options={{
-                    title: 'Your Favourites', 
-                }
-                } 
+                options={({navigation}) => {
+                        
+                    return {
+                        title: 'Your Favourites', 
+                        headerLeft: () => (<HeaderButtons HeaderButtonComponent={ButtonHeader}>
+                            <Item 
+                            title='Fav' 
+                            iconName='ios-menu'
+                            onPress={() => {navigation.toggleDrawer();}}
+                            />
+                        </HeaderButtons>)
+                    };
+                }}
             />
             <FavStack.Screen name='meals'
                 component={MealDetailScreen}
@@ -113,11 +122,11 @@ const Tab = Platform.OS === 'android' ? createMaterialBottomTabNavigator() : cre
 const MealsFavTabNavigator = () => {
     return (
     
-      <Tab.Navigator tabBarOptions={{showIcon: true, activeTintColor: colors.accentColor}} >
+      <Tab.Navigator activeColor={colors.accentColor} barStyle={{backgroundColor: colors.primaryColor}}>
         <Tab.Screen 
         name="Meals" 
         component={MealsNavigator} 
-        options={{tabBarIcon: (tabInfo) => {return <Ionicons name='ios-restaurant' size={25} color={tabInfo.color}/>}}}/>
+        options={{tabBarIcon: (tabInfo) => {return <Ionicons name='ios-restaurant' size={25} color={tabInfo.color} />}}}/>
         <Tab.Screen 
         name="Favourites" 
         component={FavNavigator} 
@@ -130,8 +139,30 @@ const MealsFavTabNavigator = () => {
 
 const FiltersNavigator = () => {
     return(
-        <Stack.Navigator>
-            <Stack.Screen name='Filter' component={FiltersScreen} />
+        <Stack.Navigator screenOptions={{
+            headerStyle: {backgroundColor: colors.primaryColor},
+            headerTintColor: 'white'
+            }}>
+            <Stack.Screen name='Filter' component={FiltersScreen} options={({navigation}) => {
+                        
+                        return {
+                            title: 'Filter', 
+                            headerLeft: () => (<HeaderButtons HeaderButtonComponent={ButtonHeader}>
+                                <Item 
+                                title='Filter' 
+                                iconName='ios-menu'
+                                onPress={() => {navigation.toggleDrawer();}}
+                                />
+                            </HeaderButtons>),
+                            headerRight: () => (<HeaderButtons HeaderButtonComponent={ButtonHeader}>
+                                <Item 
+                                title='Filter' 
+                                iconName='ios-save'
+                                onPress={console.log('save')}
+                                />
+                            </HeaderButtons>)
+                        };
+                    }}/>
         </Stack.Navigator>
     );
 };
@@ -141,9 +172,9 @@ const Drawer = createDrawerNavigator();
 const MainNavigator = () => {
     return(
         <NavigationContainer>
-        <Drawer.Navigator>
-            <Drawer.Screen name='Fav' component={MealsFavTabNavigator}/>
-            <Drawer.Screen name='Filter' component={FiltersNavigator}/>
+        <Drawer.Navigator drawerContentOptions={{activeTintColor:colors.accentColor}}>
+            <Drawer.Screen name='Fav' component={MealsFavTabNavigator} options={{title:'Meals'}}/>
+            <Drawer.Screen name='Filter' component={FiltersNavigator} options={{tite:'Filters'}}/>
         </Drawer.Navigator>
         </NavigationContainer>
     );
